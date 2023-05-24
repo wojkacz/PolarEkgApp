@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/conBatteryText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/device_battery"
+        android:textAlignment="textEnd"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/conBatteryValue"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/conDeviceIDText" />
+
+    <TextView
+        android:id="@+id/conDeviceIDText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/device_id"
+        android:textAlignment="textEnd"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/conBatteryText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+    <TextView
+        android:id="@+id/conDeviceID"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/connecting_text"
+        android:textSize="20sp"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/conBatteryValue"
+        app:layout_constraintTop_toTopOf="@+id/conDeviceIDText" />
+
+    <TextView
+        android:id="@+id/conBatteryValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/connecting_text"
+        android:textSize="20sp"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/conBatteryText"
+        app:layout_constraintTop_toBottomOf="@+id/conDeviceID" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="409dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/conBatteryText" />
+
+    <Button
+        android:id="@+id/conConnectToEcgButton"
+        android:layout_width="300dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="30dp"
+        android:text="@string/connect_to_ecg_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider2" />
+
+    <Button
+        android:id="@+id/conConnectToPpgButton"
+        android:layout_width="300dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/connect_to_ppg_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/conConnectToEcgButton" />
+
+    <Button
+        android:id="@+id/conDisconnectButton"
+        android:layout_width="300dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/disconnect_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/conConnectToPpgButton" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

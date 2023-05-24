@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/ppgBatteryText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/device_battery"
+        android:textAlignment="textEnd"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/ppgBatteryValue"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ppgDeviceIDText" />
+
+    <TextView
+        android:id="@+id/ppgDeviceIDText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/device_id"
+        android:textAlignment="textEnd"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/ppgBatteryText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/ppgDeviceID"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/connecting_text"
+        android:textSize="20sp"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/ppgBatteryValue"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/ppgBatteryValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/connecting_text"
+        android:textSize="20sp"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ppgBatteryText"
+        app:layout_constraintTop_toBottomOf="@+id/ppgDeviceID" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="409dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ppgBatteryText" />
+
+    <TextView
+        android:id="@+id/ppgText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/PPG"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider2" />
+
+    <Button
+        android:id="@+id/ppgMeasureButton"
+        android:layout_width="350dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="5dp"
+        android:text="@string/start_measurement"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ppgText" />
+
+    <Button
+        android:id="@+id/ppgDisconnectButton"
+        android:layout_width="168dp"
+        android:layout_height="75dp"
+        android:text="@string/disconnect_text"
+        app:layout_constraintEnd_toEndOf="@+id/ppgMeasureButton"
+        app:layout_constraintTop_toTopOf="@+id/ppgSaveMeasurementButton" />
+
+    <Button
+        android:id="@+id/ppgSaveMeasurementButton"
+        android:layout_width="168dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/save_measurement"
+        app:layout_constraintStart_toStartOf="@+id/ppgMeasureButton"
+        app:layout_constraintTop_toBottomOf="@+id/ppgMeasureButton" />
+
+    <View
+        android:id="@+id/divider3"
+        android:layout_width="409dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="15dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ppgSaveMeasurementButton" />
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/ppgLineChart"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider3">
+
+    </com.github.mikephil.charting.charts.LineChart>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
