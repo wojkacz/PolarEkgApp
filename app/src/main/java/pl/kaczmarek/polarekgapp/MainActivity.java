@@ -53,7 +53,9 @@ public class MainActivity extends AppCompatActivity {
 
         Button savedMeasurements = findViewById(R.id.savedMeasurements);
         savedMeasurements.setOnClickListener(view -> {
-            showToast("Test");
+            clearScreen();
+            Intent savedMeasurementsScreen = new Intent(this, SavedFilesActivity.class);
+            startActivity(savedMeasurementsScreen);
         });
 
         EditText deviceIdInput = (EditText) findViewById(R.id.deviceIdInput);

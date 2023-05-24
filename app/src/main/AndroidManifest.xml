@@ -44,7 +44,8 @@
         <activity android:name=".ConnectedDeviceActivity" />
         <activity android:name=".EcgActivity" />
         <activity android:name=".PpgActivity" />
-        <activity android:name=".SaveDataActivity"/>
+        <activity android:name=".SaveDataActivity" />
+        <activity android:name=".SavedFilesActivity" />
     </application>
 
 </manifest>

@@ -126,6 +126,16 @@ public class ConnectedDeviceActivity extends AppCompatActivity {
         };
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            api.disconnectFromDevice(deviceId);
+        } catch (PolarInvalidArgument e) {
+            e.printStackTrace();
+        }
+    }
+
     public void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG)
                 .show();

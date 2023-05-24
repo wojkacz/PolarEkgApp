@@ -21,4 +21,7 @@
     <string name="save_data">Save your measurement!</string>
     <string name="save_data_hint">Please enter filename below</string>
     <string name="temp_fileName">FileName</string>
+    <string name="saved_files_hint">Display saved measurement</string>
+    <string name="load_save">Load</string>
+    <string name="delete_save">Delete</string>
 </resources>
