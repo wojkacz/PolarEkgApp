@@ -24,4 +24,7 @@
     <string name="saved_files_hint">Display saved measurement</string>
     <string name="load_save">Load</string>
     <string name="delete_save">Delete</string>
+    <string name="filename_display">FileName: </string>
+    <string name="return_text">Return</string>
+    <string name="waiting">Waiting for measurement…</string>
 </resources>

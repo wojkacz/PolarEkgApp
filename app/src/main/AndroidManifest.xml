@@ -46,6 +46,7 @@
         <activity android:name=".PpgActivity" />
         <activity android:name=".SaveDataActivity" />
         <activity android:name=".SavedFilesActivity" />
+        <activity android:name=".SavedEcgActivity"/>
     </application>
 
 </manifest>

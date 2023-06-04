@@ -11,4 +11,9 @@ public class Constants {
     public static final String BATTERY_VALUE = "batteryVal";
     public static final String MEASUREMENT_TYPE = "measurementType";
     public static final String DATA_TO_SAVE = "dataToSave";
+    public static final String LOADED_DATA = "loadedData";
+    public static final String FILE_NAME = "fileName";
+    public static final String ECG_EXTENSION = "ecg";
+    public static final String PPG_EXTENSION = "ppg";
+    public static final int MAX_VISIBLE_ENTRIES = 200;
 }

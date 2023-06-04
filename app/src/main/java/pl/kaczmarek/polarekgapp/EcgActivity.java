@@ -2,6 +2,7 @@ package pl.kaczmarek.polarekgapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +58,8 @@ public class EcgActivity extends AppCompatActivity {
     TextView deviceIdText;
     LineChart lineChart;
 
+    boolean cleared = false;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +72,9 @@ public class EcgActivity extends AppCompatActivity {
     }
 
     private void setObjects() {
+        lineChart = findViewById(R.id.ecgLineChart);
+        ChartSetter.setEcgChart(lineChart);
+
         startMeasuringButton = findViewById(R.id.ecgMeasureButton);
         startMeasuringButton.setOnClickListener(onClick -> {
             if(ecgDisposable == null) {
@@ -89,14 +95,25 @@ public class EcgActivity extends AppCompatActivity {
                                         ILineDataSet dataSet = lineData.getDataSetByIndex(0);
                                         for (Integer data : ecgData.samples) {
                                             float scaledData = data.floatValue() / 1000.0f;
-                                            float index = dataSet.getEntryCount();
-                                            Entry entry = new Entry(index, scaledData);
-                                            dataSet.addEntry(entry);
-                                        }
+                                            if(!cleared && scaledData <= 0) {
+                                                cleared = true;
+                                                TextView waitingTextView = findViewById(R.id.waitingText);
+                                                waitingTextView.setVisibility(View.GONE);
+                                            } else if(cleared) {
+                                                float index = dataSet.getEntryCount();
+                                                Entry entry = new Entry(index, scaledData);
+                                                dataSet.addEntry(entry);
 
-                                        lineData.notifyDataChanged();
-                                        lineChart.notifyDataSetChanged();
-                                        lineChart.invalidate();
+
+                                                lineData.notifyDataChanged();
+                                                lineChart.notifyDataSetChanged();
+                                                lineChart.invalidate();
+
+                                                lineChart.moveViewToX(dataSet.getEntryCount() - Constants.MAX_VISIBLE_ENTRIES);
+                                                lineChart.fitScreen();
+                                                lineChart.setVisibleXRangeMaximum(Constants.MAX_VISIBLE_ENTRIES);
+                                            }
+                                        }
                                     }
                                 },
                                 (Consumer<Throwable>) error -> {
@@ -146,15 +163,10 @@ public class EcgActivity extends AppCompatActivity {
         saveButton.setEnabled(false);
         saveButton.setOnClickListener(onClick -> {
             Intent saveScreen = new Intent(this, SaveDataActivity.class);
-            saveScreen.putExtra(Constants.MEASUREMENT_TYPE, "ecg");
+            saveScreen.putExtra(Constants.MEASUREMENT_TYPE, Constants.ECG_EXTENSION);
 
             LineDataSet dataSetToSave = (LineDataSet) lineChart.getData().getDataSetByIndex(0);
-            StringBuilder stringBuilder = new StringBuilder();
-            for(Entry data : dataSetToSave.getValues()) {
-                stringBuilder.append(data.getY())
-                        .append(';');
-            }
-            String formattedData = stringBuilder.toString();
+            String formattedData = DataFormatter.formatEntriesToString(dataSetToSave.getValues());
 
             saveScreen.putExtra(Constants.DATA_TO_SAVE, formattedData);
             startActivity(saveScreen);
@@ -172,24 +184,7 @@ public class EcgActivity extends AppCompatActivity {
         deviceIdText = findViewById(R.id.ecgDeviceID);
         deviceIdText.setText(deviceId);
 
-        // Line Chart
-        lineChart = findViewById(R.id.ecgLineChart);
-        lineChart.setDragEnabled(true);
-        lineChart.setScaleEnabled(false);
-        lineChart.setDoubleTapToZoomEnabled(false);
-        lineChart.setScaleMinima(10f, 1f);
 
-        LineData lineData = new LineData();
-        LineDataSet dataSet = new LineDataSet(new ArrayList<>(), "EKG");
-
-        lineData.addDataSet(dataSet);
-        lineChart.setData(lineData);
-
-        Description description = new Description();
-        description.setText("Opis wykresu");
-        lineChart.setDescription(description);
-
-        lineChart.invalidate();
     }
 
     private void disposeEcg() {

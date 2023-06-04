@@ -120,6 +120,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ecgSaveMeasurementButton" />
 
+    <TextView
+        android:id="@+id/waitingText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:text="@string/waiting"
+        android:textStyle="bold"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/divider3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ecgLineChart" />
+
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/ecgLineChart"
         android:layout_width="0dp"
