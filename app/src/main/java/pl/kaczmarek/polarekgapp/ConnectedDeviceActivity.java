@@ -111,7 +111,7 @@ public class ConnectedDeviceActivity extends AppCompatActivity {
             }
 
             @Override
-            public void streamingFeaturesReady(@NonNull String identifier, @NonNull Set<PolarBleApi.DeviceStreamingFeature> features) {
+            public void streamingFeaturesReady(@NonNull String identifier, @NonNull Set<? extends PolarBleApi.DeviceStreamingFeature> features) {
                 super.streamingFeaturesReady(identifier, features);
                 for(PolarBleApi.DeviceStreamingFeature feature : features) {
                     if(feature == PolarBleApi.DeviceStreamingFeature.ECG) {
@@ -122,7 +122,6 @@ public class ConnectedDeviceActivity extends AppCompatActivity {
                     }
                 }
             }
-
         };
     }
 

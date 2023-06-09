@@ -16,4 +16,5 @@ public class Constants {
     public static final String ECG_EXTENSION = "ecg";
     public static final String PPG_EXTENSION = "ppg";
     public static final int MAX_VISIBLE_ENTRIES = 200;
+    public static final int PEAK_TRESHOLD = 500;
 }

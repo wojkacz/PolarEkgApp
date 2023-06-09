@@ -17,6 +17,7 @@
     <string name="pause_measurement">Pause Measurement</string>
     <string name="ECG">ECG</string>
     <string name="PPG">PPG</string>
+    <string name="BPM">BPM</string>
     <string name="clear">Clear</string>
     <string name="save_data">Save your measurement!</string>
     <string name="save_data_hint">Please enter filename below</string>

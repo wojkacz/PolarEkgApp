@@ -2,6 +2,7 @@ package pl.kaczmarek.polarekgapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -12,8 +13,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.data.DataSet;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
@@ -21,20 +20,18 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 
 import com.polar.sdk.api.PolarBleApiCallback;
 import com.polar.sdk.api.PolarBleApiDefaultImpl;
-import com.polar.sdk.api.errors.PolarInvalidArgument;
-import com.polar.sdk.api.model.PolarDeviceInfo;
 import com.polar.sdk.api.model.PolarEcgData;
 import io.reactivex.rxjava3.functions.Action;
 import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.functions.Consumer;
+
+import com.polar.sdk.api.model.PolarHrData;
 import com.polar.sdk.api.model.PolarSensorSetting;
 
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import com.polar.sdk.api.PolarBleApi;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -56,9 +53,10 @@ public class EcgActivity extends AppCompatActivity {
     Button clearButton;
     TextView batteryValue;
     TextView deviceIdText;
+    TextView bpmText;
     LineChart lineChart;
 
-    boolean cleared = false;
+    boolean readyToMeasure = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,11 +67,22 @@ public class EcgActivity extends AppCompatActivity {
 
         api = PolarBleApiDefaultImpl.defaultImplementation(this, PolarBleApi.ALL_FEATURES);
         setObjects();
+        api.setApiCallback(new PolarBleApiCallback(){
+            @Override
+            public void hrNotificationReceived(@NonNull String identifier, @NonNull PolarHrData data) {
+                super.hrNotificationReceived(identifier, data);
+                if(readyToMeasure) {
+                    bpmText.setText(String.format(Locale.ENGLISH, "%d BPM", data.getHr()));
+                }
+            }
+        });
     }
 
     private void setObjects() {
         lineChart = findViewById(R.id.ecgLineChart);
         ChartSetter.setEcgChart(lineChart);
+
+        bpmText = findViewById(R.id.bpmText);
 
         startMeasuringButton = findViewById(R.id.ecgMeasureButton);
         startMeasuringButton.setOnClickListener(onClick -> {
@@ -93,17 +102,15 @@ public class EcgActivity extends AppCompatActivity {
                                         PolarEcgData ecgData = (PolarEcgData) polarEcgData;
                                         LineData lineData = lineChart.getData();
                                         ILineDataSet dataSet = lineData.getDataSetByIndex(0);
-                                        for (Integer data : ecgData.samples) {
-                                            float scaledData = data.floatValue() / 1000.0f;
-                                            if(!cleared && scaledData <= 0) {
-                                                cleared = true;
-                                                TextView waitingTextView = findViewById(R.id.waitingText);
-                                                waitingTextView.setVisibility(View.GONE);
-                                            } else if(cleared) {
+                                        for (PolarEcgData.PolarEcgDataSample data : ecgData.getSamples()) {
+                                            if(!readyToMeasure && data.component2() <= 0) {
+                                                readyToMeasure = true;
+                                                findViewById(R.id.waitingText).setVisibility(View.GONE);
+                                            } else if(readyToMeasure) {
                                                 float index = dataSet.getEntryCount();
+                                                float scaledData = data.component2() / 1000f;
                                                 Entry entry = new Entry(index, scaledData);
                                                 dataSet.addEntry(entry);
-
 
                                                 lineData.notifyDataChanged();
                                                 lineChart.notifyDataSetChanged();
@@ -120,30 +127,21 @@ public class EcgActivity extends AppCompatActivity {
                                     showToast("Error");
                                     disposeEcg();
                                     disconnectButton.setEnabled(true);
-                                    if(lineChart.getData().getEntryCount() > 0) {
-                                        saveButton.setEnabled(true);
-                                        clearButton.setEnabled(true);
-                                    }
+                                    enableButtonsIfPossible();
                                     startMeasuringButton.setText(getString(R.string.start_measurement));
                                 },
                                 (Action) () -> {
                                     showToast("Ecg stream complete");
                                     disposeEcg();
                                     disconnectButton.setEnabled(true);
-                                    if(lineChart.getData().getEntryCount() > 0) {
-                                        saveButton.setEnabled(true);
-                                        clearButton.setEnabled(true);
-                                    }
+                                    enableButtonsIfPossible();
                                     startMeasuringButton.setText(getString(R.string.start_measurement));
                                 }
                         );
             } else {
                 disposeEcg();
                 disconnectButton.setEnabled(true);
-                if(lineChart.getData().getEntryCount() > 0) {
-                    saveButton.setEnabled(true);
-                    clearButton.setEnabled(true);
-                }
+                enableButtonsIfPossible();
                 startMeasuringButton.setText(getString(R.string.start_measurement));
             }
         });
@@ -152,6 +150,7 @@ public class EcgActivity extends AppCompatActivity {
         clearButton.setEnabled(false);
         clearButton.setOnClickListener(onClick -> {
             lineChart.getData().getDataSetByIndex(0).clear();
+            readyToMeasure = false;
             saveButton.setEnabled(false);
             clearButton.setEnabled(false);
             lineChart.getData().notifyDataChanged();
@@ -191,6 +190,13 @@ public class EcgActivity extends AppCompatActivity {
         if(ecgDisposable != null) {
             ecgDisposable.dispose();
             ecgDisposable = null;
+        }
+    }
+
+    private void enableButtonsIfPossible() {
+        if(lineChart.getData().getEntryCount() > 0) {
+            saveButton.setEnabled(true);
+            clearButton.setEnabled(true);
         }
     }
 
