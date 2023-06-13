@@ -14,6 +14,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.List;
 
+import pl.kaczmarek.polarekgapp.Controller.SavedMeasureActivityController;
 import pl.kaczmarek.polarekgapp.R;
 import pl.kaczmarek.polarekgapp.Utility.ChartSetter;
 import pl.kaczmarek.polarekgapp.Utility.Constants;
@@ -31,39 +32,15 @@ public class SavedMeasureActivity extends AppCompatActivity {
         String fileName = getIntent().getStringExtra(Constants.FILE_NAME);
 
         TextView fileNameText = findViewById(R.id.loadedFileNameText);
-        fileNameText.setText(fileName);
-
         LineChart lineChart = findViewById(R.id.savedMeasureLineChart);
-        if(fileName.endsWith(Constants.ECG_EXTENSION)) {
-            ChartSetter.setEcgChart(lineChart);
-        } else if(fileName.endsWith(Constants.PPG_EXTENSION)) {
-            ChartSetter.setPpgChart(lineChart);
-        } else {
-            ToastShower.show(this, "Incorrect file extension!");
-            finish();
-        }
-        insertDataToChart(data, lineChart);
-
         Button returnButton = findViewById(R.id.returnButton);
-        returnButton.setOnClickListener(onClick -> finish());
+
+        fileNameText.setText(fileName);
+        SavedMeasureActivityController controller = new SavedMeasureActivityController(this, lineChart, data, fileName);
+
+        controller.setLineChartByType();
+        controller.insertDataToChart();
+
+        returnButton.setOnClickListener(onClick -> controller.onReturnButtonClick());
     }
-
-    private void insertDataToChart(String data, LineChart lineChart) {
-        List<Entry> entries = DataFormatter.formatStringToEntries(data);
-        LineData lineData = lineChart.getData();
-        ILineDataSet dataSet = lineData.getDataSetByIndex(0);
-
-        for(Entry entry : entries) {
-            dataSet.addEntry(entry);
-        }
-
-        lineChart.moveViewToX(dataSet.getEntryCount() - Constants.MAX_VISIBLE_ENTRIES);
-        lineData.notifyDataChanged();
-        lineChart.notifyDataSetChanged();
-        lineChart.invalidate();
-
-        lineChart.fitScreen();
-        lineChart.setVisibleXRangeMaximum(Constants.MAX_VISIBLE_ENTRIES);
-    }
-
 }

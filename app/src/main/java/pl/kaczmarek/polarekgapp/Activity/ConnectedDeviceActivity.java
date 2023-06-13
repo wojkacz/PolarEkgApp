@@ -15,6 +15,7 @@ import com.polar.sdk.api.model.PolarDeviceInfo;
 import java.util.Locale;
 import java.util.Set;
 
+import pl.kaczmarek.polarekgapp.Controller.ConnectedDeviceActivityController;
 import pl.kaczmarek.polarekgapp.R;
 import pl.kaczmarek.polarekgapp.Utility.Constants;
 import pl.kaczmarek.polarekgapp.Utility.ToastShower;
@@ -25,14 +26,14 @@ public class ConnectedDeviceActivity extends AppCompatActivity {
     private String deviceId;
     private int batteryLevel;
 
-    PolarBleApi api;
+    private PolarBleApi api;
+    private ConnectedDeviceActivityController controller;
 
-    // Objects
-    Button connectToEcgButton;
-    Button connectToPpgButton;
-    Button disconnectButton;
-    TextView batteryValue;
-    TextView deviceIdText;
+    private Button connectToEcgButton;
+    private Button connectToPpgButton;
+    private Button disconnectButton;
+    private TextView batteryValue;
+    private TextView deviceIdText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +42,21 @@ public class ConnectedDeviceActivity extends AppCompatActivity {
 
         deviceId = getIntent().getStringExtra(Constants.DEVICE_ID);
         api = PolarBleApiDefaultImpl.defaultImplementation(this, PolarBleApi.ALL_FEATURES);
+        controller = new ConnectedDeviceActivityController(this, api, deviceId);
 
-        setObjects();
+        connectToEcgButton = findViewById(R.id.conConnectToEcgButton);
+        connectToPpgButton = findViewById(R.id.conConnectToPpgButton);
+        disconnectButton = findViewById(R.id.conDisconnectButton);
+        deviceIdText = findViewById(R.id.conDeviceID);
+        batteryValue = findViewById(R.id.conBatteryValue);
+
+        connectToEcgButton.setEnabled(false);
+        connectToPpgButton.setEnabled(false);
+
+        connectToEcgButton.setOnClickListener(view -> controller.onConnectToEcgButtonClick());
+        connectToPpgButton.setOnClickListener(view -> controller.onConnectToPpgButtonClick());
+        disconnectButton.setOnClickListener(view -> finish());
+
         api.setApiCallback(getApiCallback(this));
 
         try {
@@ -54,34 +68,8 @@ public class ConnectedDeviceActivity extends AppCompatActivity {
         }
     }
 
-    private void setObjects() {
-        connectToEcgButton = findViewById(R.id.conConnectToEcgButton);
-        connectToEcgButton.setEnabled(false);
-        connectToEcgButton.setOnClickListener(onClick -> {
-            Intent ecgActivityScreen = new Intent(this, EcgActivity.class);
-            ecgActivityScreen.putExtra(Constants.DEVICE_ID, deviceId);
-            ecgActivityScreen.putExtra(Constants.BATTERY_VALUE, batteryLevel);
-            startActivity(ecgActivityScreen);
-        });
-
-        connectToPpgButton = findViewById(R.id.conConnectToPpgButton);
-        connectToPpgButton.setEnabled(false);
-        connectToPpgButton.setOnClickListener(onClick -> {
-            Intent ppgActivityScreen = new Intent(this, PpgActivity.class);
-            ppgActivityScreen.putExtra(Constants.DEVICE_ID, deviceId);
-            startActivity(ppgActivityScreen);
-        });
-
-        disconnectButton = findViewById(R.id.conDisconnectButton);
-        disconnectButton.setOnClickListener(onClick -> finish());
-
-        deviceIdText = findViewById(R.id.conDeviceID);
-        batteryValue = findViewById(R.id.conBatteryValue);
-    }
-
     private PolarBleApiCallback getApiCallback(Context context) {
         return new PolarBleApiCallback() {
-
             @Override
             public void batteryLevelReceived(@NonNull String identifier, int level) {
                 super.batteryLevelReceived(identifier, level);
@@ -105,7 +93,7 @@ public class ConnectedDeviceActivity extends AppCompatActivity {
             @Override
             public void blePowerStateChanged(boolean powered) {
                 super.blePowerStateChanged(powered);
-                if(!powered) {
+                if (!powered) {
                     ToastShower.show(context, String.format("Lost connection with device %s!", deviceId));
                     finish();
                 }
@@ -114,14 +102,7 @@ public class ConnectedDeviceActivity extends AppCompatActivity {
             @Override
             public void streamingFeaturesReady(@NonNull String identifier, @NonNull Set<? extends PolarBleApi.DeviceStreamingFeature> features) {
                 super.streamingFeaturesReady(identifier, features);
-                for(PolarBleApi.DeviceStreamingFeature feature : features) {
-                    if(feature == PolarBleApi.DeviceStreamingFeature.ECG) {
-                        connectToEcgButton.setEnabled(true);
-                    }
-                    else if(feature == PolarBleApi.DeviceStreamingFeature.PPG) {
-                        connectToPpgButton.setEnabled(true);
-                    }
-                }
+                controller.onStreamingFeaturesReady(features);
             }
         };
     }
@@ -135,6 +116,16 @@ public class ConnectedDeviceActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-    
-    
+
+    public void enableEcgButton() {
+        connectToEcgButton.setEnabled(true);
+    }
+
+    public void enablePpgButton() {
+        connectToPpgButton.setEnabled(true);
+    }
+
+    public int getBatteryLevel() {
+        return batteryLevel;
+    }
 }

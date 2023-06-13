@@ -26,6 +26,8 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Action;
 import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.functions.Function;
+import pl.kaczmarek.polarekgapp.Controller.EcgActivityController;
+import pl.kaczmarek.polarekgapp.Controller.PpgActivityController;
 import pl.kaczmarek.polarekgapp.R;
 import pl.kaczmarek.polarekgapp.Utility.ChartSetter;
 import pl.kaczmarek.polarekgapp.Utility.Constants;
@@ -37,19 +39,19 @@ public class PpgActivity extends AppCompatActivity {
     private String deviceId;
     private Integer batteryLevel;
 
-    PolarBleApi api;
+    private PolarBleApi api;
+    private PpgActivityController controller;
 
-    Disposable ppgDisposable;
-    Button startMeasuringButton;
-    Button saveButton;
-    Button disconnectButton;
-    Button clearButton;
-    TextView batteryValue;
-    TextView deviceIdText;
-    TextView bpmText;
-    LineChart lineChart;
+    private Button startMeasuringButton;
+    private Button saveButton;
+    private Button disconnectButton;
+    private Button clearButton;
+    private TextView batteryValue;
+    private TextView deviceIdText;
+    private TextView bpmText;
+    private LineChart lineChart;
+    private TextView waitingText;
 
-    boolean readyToMeasure = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,136 +61,73 @@ public class PpgActivity extends AppCompatActivity {
         batteryLevel = getIntent().getIntExtra(Constants.BATTERY_VALUE, -1);
 
         api = PolarBleApiDefaultImpl.defaultImplementation(this, PolarBleApi.ALL_FEATURES);
-        setObjects();
+
+        lineChart = findViewById(R.id.ppgLineChart);
+        bpmText = findViewById(R.id.ppgBpmText);
+        startMeasuringButton = findViewById(R.id.ppgMeasureButton);
+        clearButton = findViewById(R.id.ppgClearButton);
+        saveButton = findViewById(R.id.ppgSaveMeasurementButton);
+        disconnectButton = findViewById(R.id.ppgDisconnectButton);
+        batteryValue = findViewById(R.id.ppgBatteryValue);
+        deviceIdText = findViewById(R.id.ppgDeviceID);
+        waitingText = findViewById(R.id.ppgWaitingText);
+
+        disableSaveAndClearButtons();
+        ChartSetter.setPpgChart(lineChart);
+        controller = new PpgActivityController(this, api, lineChart, deviceId);
+
+        deviceIdText.setText(deviceId);
+        batteryValue.setText(batteryLevel != -1 ? String.format(Locale.ENGLISH, "%d%%", batteryLevel) : "Not found");
+
+        clearButton.setOnClickListener(onClick -> controller.onClearButtonClick());
+        saveButton.setOnClickListener(onClick -> controller.onSaveButtonClick());
+        disconnectButton.setOnClickListener(onClick -> controller.onDisconnectButtonClick());
+        startMeasuringButton.setOnClickListener(onClick -> controller.onStartMeasurementButtonClick());
+
         api.setApiCallback(new PolarBleApiCallback(){
             @Override
             public void hrNotificationReceived(@NonNull String identifier, @NonNull PolarHrData data) {
                 super.hrNotificationReceived(identifier, data);
-                if(readyToMeasure) {
+                if(!controller.isPaused()) {
                     bpmText.setText(String.format(Locale.ENGLISH, "%d BPM", data.getHr()));
                 }
             }
         });
     }
 
-    private void setObjects() {
-        lineChart = findViewById(R.id.ppgLineChart);
-        ChartSetter.setPpgChart(lineChart);
-
-        bpmText = findViewById(R.id.ppgBpmText);
-
-        startMeasuringButton = findViewById(R.id.ppgMeasureButton);
-        startMeasuringButton.setOnClickListener(onClick -> {
-            if(ppgDisposable == null) {
-                startMeasuringButton.setText(getString(R.string.pause_measurement));
-                saveButton.setEnabled(false);
-                disconnectButton.setEnabled(false);
-                clearButton.setEnabled(false);
-                ppgDisposable = api
-                        .requestStreamSettings(deviceId, PolarBleApi.DeviceStreamingFeature.PPG)
-                        .toFlowable()
-                        .flatMap((Function<PolarSensorSetting, Publisher<?>>) sensorSetting -> api.startOhrStreaming(deviceId, sensorSetting.maxSettings()))
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                (Consumer<Object>) polarPpgData -> {
-                                    if (polarPpgData instanceof PolarOhrData) {
-                                        PolarOhrData ppgData = (PolarOhrData) polarPpgData;
-                                        LineData lineData = lineChart.getData();
-                                        ILineDataSet dataSet = lineData.getDataSetByIndex(0);
-                                        for (Integer data : ppgData.getSamples().get(0).getChannelSamples()) {
-                                            if(!readyToMeasure) {
-                                                readyToMeasure = true;
-                                                findViewById(R.id.waitingText).setVisibility(View.GONE);
-                                            } else {
-                                                float index = dataSet.getEntryCount();
-                                                Entry entry = new Entry(index, data);
-                                                dataSet.addEntry(entry);
-
-                                                lineData.notifyDataChanged();
-                                                lineChart.notifyDataSetChanged();
-                                                lineChart.invalidate();
-
-                                                lineChart.moveViewToX(dataSet.getEntryCount() - Constants.MAX_VISIBLE_ENTRIES);
-                                                lineChart.fitScreen();
-                                                lineChart.setVisibleXRangeMaximum(Constants.MAX_VISIBLE_ENTRIES);
-                                            }
-                                        }
-                                    }
-                                },
-                                (Consumer<Throwable>) error -> {
-                                    ToastShower.show(this, "Error");
-                                    disposePpg();
-                                    disconnectButton.setEnabled(true);
-                                    enableButtonsIfPossible();
-                                    startMeasuringButton.setText(getString(R.string.start_measurement));
-                                },
-                                (Action) () -> {
-                                    ToastShower.show(this, "Ppg stream complete");
-                                    disposePpg();
-                                    disconnectButton.setEnabled(true);
-                                    enableButtonsIfPossible();
-                                    startMeasuringButton.setText(getString(R.string.start_measurement));
-                                }
-                        );
-            } else {
-                disposePpg();
-                disconnectButton.setEnabled(true);
-                enableButtonsIfPossible();
-                startMeasuringButton.setText(getString(R.string.start_measurement));
-            }
-        });
-
-        clearButton = findViewById(R.id.ppgClearButton);
-        clearButton.setEnabled(false);
-        clearButton.setOnClickListener(onClick -> {
-            lineChart.getData().getDataSetByIndex(0).clear();
-            readyToMeasure = false;
-            saveButton.setEnabled(false);
-            clearButton.setEnabled(false);
-            lineChart.getData().notifyDataChanged();
-            lineChart.notifyDataSetChanged();
-            lineChart.invalidate();
-        });
-
-        saveButton = findViewById(R.id.ppgSaveMeasurementButton);
-        saveButton.setEnabled(false);
-        saveButton.setOnClickListener(onClick -> {
-            Intent saveScreen = new Intent(this, SaveDataActivity.class);
-            saveScreen.putExtra(Constants.MEASUREMENT_TYPE, Constants.PPG_EXTENSION);
-
-            LineDataSet dataSetToSave = (LineDataSet) lineChart.getData().getDataSetByIndex(0);
-            String formattedData = DataFormatter.formatEntriesToString(dataSetToSave.getValues());
-
-            saveScreen.putExtra(Constants.DATA_TO_SAVE, formattedData);
-            startActivity(saveScreen);
-        });
-
-        disconnectButton = findViewById(R.id.ppgDisconnectButton);
-        disconnectButton.setOnClickListener(onClick -> {
-            disposePpg();
-            finish();
-        });
-
-        batteryValue = findViewById(R.id.ppgBatteryValue);
-        batteryValue.setText(batteryLevel != -1 ? String.format(Locale.ENGLISH, "%d%%", batteryLevel) : "Not found");
-
-        deviceIdText = findViewById(R.id.ppgDeviceID);
-        deviceIdText.setText(deviceId);
-    }
-
-    private void disposePpg() {
-        if(ppgDisposable != null) {
-            ppgDisposable.dispose();
-            ppgDisposable = null;
-        }
-    }
-
-    private void enableButtonsIfPossible() {
+    public void enableSaveAndClearButtonsIfPossible() {
         if(lineChart.getData().getEntryCount() > 0) {
             saveButton.setEnabled(true);
             clearButton.setEnabled(true);
         }
     }
 
-    
+    public void disableSaveAndClearButtons() {
+        saveButton.setEnabled(false);
+        clearButton.setEnabled(false);
+    }
+
+    public void changeStartMeasuringButtonText() {
+        if(startMeasuringButton.getText().equals(getString(R.string.start_measurement))) {
+            startMeasuringButton.setText(getString(R.string.pause_measurement));
+            return;
+        }
+        startMeasuringButton.setText(getString(R.string.start_measurement));
+    }
+
+    public void disableDisconnectButton() {
+        disconnectButton.setEnabled(false);
+    }
+
+    public void enableDisconnectButton() {
+        disconnectButton.setEnabled(true);
+    }
+
+    public void setWaitingTextVisibility() {
+        if(waitingText.getVisibility() == View.GONE) {
+            waitingText.setText(View.VISIBLE);
+            return;
+        }
+        waitingText.setVisibility(View.GONE);
+    }
 }
