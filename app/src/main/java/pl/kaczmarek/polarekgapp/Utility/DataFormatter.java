@@ -1,4 +1,4 @@
-package pl.kaczmarek.polarekgapp;
+package pl.kaczmarek.polarekgapp.Utility;
 
 import com.github.mikephil.charting.data.Entry;
 

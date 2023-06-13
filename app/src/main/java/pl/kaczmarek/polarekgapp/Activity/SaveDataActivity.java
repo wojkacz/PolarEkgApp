@@ -1,23 +1,21 @@
-package pl.kaczmarek.polarekgapp;
+package pl.kaczmarek.polarekgapp.Activity;
 
 import android.content.Context;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Locale;
+
+import pl.kaczmarek.polarekgapp.R;
+import pl.kaczmarek.polarekgapp.Utility.Constants;
+import pl.kaczmarek.polarekgapp.Utility.ToastShower;
 
 public class SaveDataActivity extends AppCompatActivity {
 
@@ -46,19 +44,15 @@ public class SaveDataActivity extends AppCompatActivity {
                 FileWriter out = new FileWriter(new File(context.getFilesDir(), fileName));
                 out.write(dataToSave);
                 out.close();
-                showToast(String.format("Successfully saved data to %s!", fileName));
+                ToastShower.show(this, String.format("Successfully saved data to %s!", fileName));
                 finish();
             }
             catch (IOException e) {
-                showToast("Failed to save data!");
+                ToastShower.show(this, "Failed to save data!");
                 finish();
             }
         });
     }
-
-    public void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG)
-                .show();
-    }
+    
 
 }

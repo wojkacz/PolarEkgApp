@@ -1,4 +1,4 @@
-package pl.kaczmarek.polarekgapp;
+package pl.kaczmarek.polarekgapp.Activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +17,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileReader;
+
+import pl.kaczmarek.polarekgapp.R;
+import pl.kaczmarek.polarekgapp.Utility.Constants;
 
 public class SavedFilesActivity extends AppCompatActivity {
 
@@ -57,7 +60,7 @@ public class SavedFilesActivity extends AppCompatActivity {
                 String data = loadFileData(file.getName());
                 if(data == null) { return; }
                 if(file.getName().endsWith(Constants.ECG_EXTENSION)) {
-                    Intent savedEcgScreen = new Intent(this, SavedEcgActivity.class);
+                    Intent savedEcgScreen = new Intent(this, SavedMeasureActivity.class);
                     savedEcgScreen.putExtra(Constants.LOADED_DATA, data);
                     savedEcgScreen.putExtra(Constants.FILE_NAME, file.getName());
                     startActivity(savedEcgScreen);

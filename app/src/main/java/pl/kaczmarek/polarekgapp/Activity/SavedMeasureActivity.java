@@ -1,4 +1,4 @@
-package pl.kaczmarek.polarekgapp;
+package pl.kaczmarek.polarekgapp.Activity;
 
 import android.os.Bundle;
 import android.widget.Button;
@@ -14,12 +14,18 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.List;
 
-public class SavedEcgActivity extends AppCompatActivity {
+import pl.kaczmarek.polarekgapp.R;
+import pl.kaczmarek.polarekgapp.Utility.ChartSetter;
+import pl.kaczmarek.polarekgapp.Utility.Constants;
+import pl.kaczmarek.polarekgapp.Utility.DataFormatter;
+import pl.kaczmarek.polarekgapp.Utility.ToastShower;
+
+public class SavedMeasureActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.saved_ecg_activity);
+        setContentView(R.layout.saved_measure_activity);
 
         String data = getIntent().getStringExtra(Constants.LOADED_DATA);
         String fileName = getIntent().getStringExtra(Constants.FILE_NAME);
@@ -27,8 +33,15 @@ public class SavedEcgActivity extends AppCompatActivity {
         TextView fileNameText = findViewById(R.id.loadedFileNameText);
         fileNameText.setText(fileName);
 
-        LineChart lineChart = findViewById(R.id.savedEcgLineChart);
-        ChartSetter.setEcgChart(lineChart);
+        LineChart lineChart = findViewById(R.id.savedMeasureLineChart);
+        if(fileName.endsWith(Constants.ECG_EXTENSION)) {
+            ChartSetter.setEcgChart(lineChart);
+        } else if(fileName.endsWith(Constants.PPG_EXTENSION)) {
+            ChartSetter.setPpgChart(lineChart);
+        } else {
+            ToastShower.show(this, "Incorrect file extension!");
+            finish();
+        }
         insertDataToChart(data, lineChart);
 
         Button returnButton = findViewById(R.id.returnButton);

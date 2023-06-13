@@ -74,28 +74,47 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
+    <TextView
+        android:id="@+id/ppgBpmText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/BPM"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ppgSaveMeasurementButton" />
+
     <Button
         android:id="@+id/ppgMeasureButton"
-        android:layout_width="350dp"
+        android:layout_width="170dp"
         android:layout_height="75dp"
         android:layout_marginTop="5dp"
         android:text="@string/start_measurement"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintEnd_toStartOf="@+id/ppgClearButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ppgText" />
 
     <Button
+        android:id="@+id/ppgClearButton"
+        android:layout_width="170dp"
+        android:layout_height="75dp"
+        android:text="@string/clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ppgMeasureButton"
+        app:layout_constraintTop_toTopOf="@+id/ppgMeasureButton" />
+
+    <Button
         android:id="@+id/ppgDisconnectButton"
-        android:layout_width="168dp"
+        android:layout_width="170dp"
         android:layout_height="75dp"
         android:text="@string/disconnect_text"
-        app:layout_constraintEnd_toEndOf="@+id/ppgMeasureButton"
+        app:layout_constraintStart_toStartOf="@+id/ppgClearButton"
         app:layout_constraintTop_toTopOf="@+id/ppgSaveMeasurementButton" />
 
     <Button
         android:id="@+id/ppgSaveMeasurementButton"
-        android:layout_width="168dp"
+        android:layout_width="170dp"
         android:layout_height="75dp"
         android:layout_marginTop="15dp"
         android:text="@string/save_measurement"
@@ -106,11 +125,24 @@
         android:id="@+id/divider3"
         android:layout_width="409dp"
         android:layout_height="1dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ppgSaveMeasurementButton" />
+        app:layout_constraintTop_toBottomOf="@id/ppgBpmText" />
+
+    <TextView
+        android:id="@+id/ppgWaitingText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:text="@string/waiting"
+        android:textStyle="bold"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/divider3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ppgLineChart" />
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/ppgLineChart"

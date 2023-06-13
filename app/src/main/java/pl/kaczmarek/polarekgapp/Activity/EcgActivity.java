@@ -1,40 +1,34 @@
-package pl.kaczmarek.polarekgapp;
+package pl.kaczmarek.polarekgapp.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-
 import com.polar.sdk.api.PolarBleApiCallback;
 import com.polar.sdk.api.PolarBleApiDefaultImpl;
 import com.polar.sdk.api.model.PolarEcgData;
 import io.reactivex.rxjava3.functions.Action;
 import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.functions.Consumer;
-
 import com.polar.sdk.api.model.PolarHrData;
 import com.polar.sdk.api.model.PolarSensorSetting;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-
 import com.polar.sdk.api.PolarBleApi;
 import io.reactivex.rxjava3.disposables.Disposable;
+import pl.kaczmarek.polarekgapp.R;
+import pl.kaczmarek.polarekgapp.Utility.ChartSetter;
+import pl.kaczmarek.polarekgapp.Utility.Constants;
+import pl.kaczmarek.polarekgapp.Utility.DataFormatter;
+import pl.kaczmarek.polarekgapp.Utility.ToastShower;
+
 import org.reactivestreams.Publisher;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.data.Entry;
@@ -124,14 +118,14 @@ public class EcgActivity extends AppCompatActivity {
                                     }
                                 },
                                 (Consumer<Throwable>) error -> {
-                                    showToast("Error");
+                                    ToastShower.show(this,"Error");
                                     disposeEcg();
                                     disconnectButton.setEnabled(true);
                                     enableButtonsIfPossible();
                                     startMeasuringButton.setText(getString(R.string.start_measurement));
                                 },
                                 (Action) () -> {
-                                    showToast("Ecg stream complete");
+                                    ToastShower.show(this, "Ecg stream complete");
                                     disposeEcg();
                                     disconnectButton.setEnabled(true);
                                     enableButtonsIfPossible();
@@ -199,9 +193,6 @@ public class EcgActivity extends AppCompatActivity {
             clearButton.setEnabled(true);
         }
     }
-
-    public void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG)
-                .show();
-    }
+    
+    
 }

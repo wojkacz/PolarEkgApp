@@ -1,4 +1,4 @@
-package pl.kaczmarek.polarekgapp;
+package pl.kaczmarek.polarekgapp.Utility;
 
 import android.graphics.Color;
 
@@ -16,19 +16,7 @@ import java.util.Locale;
 
 public class ChartSetter {
     public static void setEcgChart(LineChart lineChart){
-        lineChart.setDragEnabled(true);
-        lineChart.setScaleEnabled(true);
-        lineChart.setDoubleTapToZoomEnabled(false);
-
-        LineData lineData = new LineData();
-        LineDataSet dataSet = new LineDataSet(new ArrayList<>(), "ECG");
-        dataSet.setDrawValues(false);
-        dataSet.setColor(Color.RED);
-        dataSet.setLineWidth(2f);
-        dataSet.setDrawCircles(false);
-
-        lineData.addDataSet(dataSet);
-        lineChart.setData(lineData);
+        setCommonChartSettings(lineChart, "ECG");
 
         YAxis leftAxis = lineChart.getAxisLeft();
         leftAxis.setAxisMaximum(2f);
@@ -40,13 +28,36 @@ public class ChartSetter {
             }
         });
 
+        lineChart.invalidate();
+    }
+
+    public static void setPpgChart(LineChart lineChart){
+        setCommonChartSettings(lineChart, "PPG");
+        lineChart.invalidate();
+    }
+
+    private static void setCommonChartSettings(LineChart lineChart, String chartName) {
+        lineChart.setDragEnabled(true);
+        lineChart.setScaleEnabled(true);
+        lineChart.setDoubleTapToZoomEnabled(false);
+
+        LineData lineData = new LineData();
+        LineDataSet dataSet = new LineDataSet(new ArrayList<>(), chartName);
+        dataSet.setDrawValues(false);
+        dataSet.setColor(Color.RED);
+        dataSet.setLineWidth(2f);
+        dataSet.setDrawCircles(false);
+
+        lineData.addDataSet(dataSet);
+        lineChart.setData(lineData);
+
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setDrawGridLines(false);
 
         Description description = new Description();
-        description.setText("ECG Chart");
+        description.setText(String.format("%s Chart", chartName));
         lineChart.setDescription(description);
-
-        lineChart.invalidate();
     }
+
+
 }

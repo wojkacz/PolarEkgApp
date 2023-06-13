@@ -29,7 +29,7 @@
         android:theme="@style/Theme.PolarEkgApp"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".Activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,12 +41,12 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <activity android:name=".ConnectedDeviceActivity" />
-        <activity android:name=".EcgActivity" />
-        <activity android:name=".PpgActivity" />
-        <activity android:name=".SaveDataActivity" />
-        <activity android:name=".SavedFilesActivity" />
-        <activity android:name=".SavedEcgActivity"/>
+        <activity android:name=".Activity.ConnectedDeviceActivity" />
+        <activity android:name=".Activity.EcgActivity" />
+        <activity android:name=".Activity.PpgActivity"/>
+        <activity android:name=".Activity.SaveDataActivity" />
+        <activity android:name=".Activity.SavedFilesActivity" />
+        <activity android:name=".Activity.SavedMeasureActivity"/>
     </application>
 
 </manifest>

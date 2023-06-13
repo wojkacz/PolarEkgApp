@@ -1,4 +1,4 @@
-package pl.kaczmarek.polarekgapp;
+package pl.kaczmarek.polarekgapp.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,30 +8,26 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.android.material.textfield.TextInputLayout;
 import com.polar.sdk.api.PolarBleApi;
 import com.polar.sdk.api.PolarBleApiDefaultImpl;
 import com.polar.sdk.api.model.PolarDeviceInfo;
-
-import java.util.function.Consumer;
-
-import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.disposables.Disposable;
+import pl.kaczmarek.polarekgapp.Controller.MainActivityController;
+import pl.kaczmarek.polarekgapp.R;
+import pl.kaczmarek.polarekgapp.Utility.Constants;
 
 public class MainActivity extends AppCompatActivity {
 
-    LayoutInflater layoutInflater;
-    LinearLayout devicesList;
-    Disposable deviceSearch;
+    private MainActivityController controller;
+    private LayoutInflater layoutInflater;
+    private LinearLayout devicesList;
+    private Disposable deviceSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,20 +42,21 @@ public class MainActivity extends AppCompatActivity {
         layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         Button scanForNearbyButton = findViewById(R.id.scanForNearbyButton);
+        Button savedMeasurements = findViewById(R.id.savedMeasurements);
+        EditText deviceIdInput = (EditText) findViewById(R.id.deviceIdInput);
+        Button connectByDeviceIDButton = findViewById(R.id.connectByDeviceIDButton);
+
         scanForNearbyButton.setOnClickListener(view -> {
                 clearScreen();
                 deviceSearch = api.searchForDevice().subscribe(this::onDeviceFound);
         });
 
-        Button savedMeasurements = findViewById(R.id.savedMeasurements);
         savedMeasurements.setOnClickListener(view -> {
             clearScreen();
             Intent savedMeasurementsScreen = new Intent(this, SavedFilesActivity.class);
             startActivity(savedMeasurementsScreen);
         });
 
-        EditText deviceIdInput = (EditText) findViewById(R.id.deviceIdInput);
-        Button connectByDeviceIDButton = findViewById(R.id.connectByDeviceIDButton);
         connectByDeviceIDButton.setOnClickListener(view -> connectToDeviceByUserProvidedID(deviceIdInput.getText().toString()));
     }
 
@@ -103,11 +100,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-    }
-
-    public void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG)
-                .show();
     }
 
     public void checkForPermissions(){
