@@ -81,7 +81,7 @@ public class PpgActivityController {
                                     PolarOhrData ppgData = (PolarOhrData) polarPpgData;
                                     LineData lineData = lineChart.getData();
                                     ILineDataSet dataSet = lineData.getDataSetByIndex(0);
-                                    for (Integer data : ppgData.getSamples().get(0).getChannelSamples()) {
+                                    for (Integer data : ppgData.getSamples().get(3).getChannelSamples()) {
                                         if(!readyToMeasure) {
                                             readyToMeasure = true;
                                             activity.setWaitingTextVisibility();
@@ -102,11 +102,11 @@ public class PpgActivityController {
                                 }
                             },
                             (Consumer<Throwable>) error -> {
-                                ToastShower.show(activity, "Error");
+                                ToastShower.show(activity, Constants.UNDEFINED_STREAMING_ERROR_MESSAGE);
                                 pauseStreaming();
                             },
                             (Action) () -> {
-                                ToastShower.show(activity, "Ppg stream complete");
+                                ToastShower.show(activity, Constants.PPG_COMPLETE_MESSAGE);
                                 pauseStreaming();
                             }
                     );

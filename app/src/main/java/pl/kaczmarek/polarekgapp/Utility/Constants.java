@@ -16,5 +16,17 @@ public class Constants {
     public static final String ECG_EXTENSION = "ecg";
     public static final String PPG_EXTENSION = "ppg";
     public static final int MAX_VISIBLE_ENTRIES = 200;
-    public static final int PEAK_TRESHOLD = 500;
+    public static final String NO_BLUETOOTH_ERROR_MESSAGE = "For proper use of application, please allow Bluetooth access.";
+    public static final String UNDEFINED_STREAMING_ERROR_MESSAGE = "Undefined streaming error. Please try again.";
+    public static final String PPG_COMPLETE_MESSAGE = "PPG Stream Complete";
+    public static final String ECG_COMPLETE_MESSAGE = "ECG Stream Complete";
+    public static final String DEVICE_CONNECTION_ERROR_MESSAGE = "Couldn't connect to device %s!";
+    public static final String DEVICE_CONNECTION_LOST_MESSAGE = "Lost connection with device %s!";
+    public static final String SAVING_SUCCESS_MESSAGE = "Successfully saved data to %s!";
+    public static final String SAVING_FAILED_MESSAGE = "Failed to save data!";
+    public static final String SAVING_NO_FILES_MESSAGE = "No saved files found!";
+    public static final String DELETING_SUCCESS_MESSAGE = "Deleted file %s!";
+    public static final String DELETING_FAILED_MESSAGE = "Unable to delete file %s!";
+    public static final String LOADING_FAILED_MESSAGE = "Unable to load file %s!";
+    public static final String LOADING_INCORRECT_EXTENSION_MESSAGE = "Incorrect file extension!";
 }

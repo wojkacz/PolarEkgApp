@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import pl.kaczmarek.polarekgapp.Activity.SaveDataActivity;
+import pl.kaczmarek.polarekgapp.Utility.Constants;
 import pl.kaczmarek.polarekgapp.Utility.ToastShower;
 
 public class SaveDataActivityController {
@@ -39,11 +40,11 @@ public class SaveDataActivityController {
             FileWriter out = new FileWriter(new File(context.getFilesDir(), fileName));
             out.write(dataToSave);
             out.close();
-            ToastShower.show(activity, String.format("Successfully saved data to %s!", fileName));
+            ToastShower.show(activity, String.format(Constants.SAVING_SUCCESS_MESSAGE, fileName));
             activity.finish();
         }
         catch (IOException e) {
-            ToastShower.show(activity, "Failed to save data!");
+            ToastShower.show(activity, Constants.SAVING_FAILED_MESSAGE);
             activity.finish();
         }
     }

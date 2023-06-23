@@ -15,6 +15,7 @@ import com.polar.sdk.api.PolarBleApiDefaultImpl;
 import pl.kaczmarek.polarekgapp.Controller.MainActivityController;
 import pl.kaczmarek.polarekgapp.R;
 import pl.kaczmarek.polarekgapp.Utility.Constants;
+import pl.kaczmarek.polarekgapp.Utility.ToastShower;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == Constants.BLUETOOTH_PERMISSION_REQUEST_CODE){
             for(int grantResult : grantResults){
                 if(grantResult == PackageManager.PERMISSION_DENIED) {
-                    return;
+                    ToastShower.show(this, Constants.NO_BLUETOOTH_ERROR_MESSAGE);
                 }
             }
         }

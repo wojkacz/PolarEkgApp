@@ -1,16 +1,13 @@
 package pl.kaczmarek.polarekgapp.Controller;
 
 import android.content.Intent;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.polar.sdk.api.PolarBleApi;
 import com.polar.sdk.api.model.PolarDeviceInfo;
-
 import io.reactivex.rxjava3.disposables.Disposable;
 import pl.kaczmarek.polarekgapp.Activity.ConnectedDeviceActivity;
 import pl.kaczmarek.polarekgapp.Activity.MainActivity;

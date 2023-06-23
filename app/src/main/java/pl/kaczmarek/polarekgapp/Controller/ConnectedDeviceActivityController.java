@@ -30,6 +30,7 @@ public class ConnectedDeviceActivityController {
     public void onConnectToPpgButtonClick() {
         Intent ppgActivityScreen = new Intent(activity, PpgActivity.class);
         ppgActivityScreen.putExtra(Constants.DEVICE_ID, deviceId);
+        ppgActivityScreen.putExtra(Constants.BATTERY_VALUE, activity.getBatteryLevel());
         activity.startActivity(ppgActivityScreen);
     }
 

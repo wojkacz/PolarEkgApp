@@ -63,7 +63,7 @@ public class ConnectedDeviceActivity extends AppCompatActivity {
             api.connectToDevice(deviceId);
         } catch (PolarInvalidArgument e) {
             e.printStackTrace();
-            ToastShower.show(this, String.format("Couldn't connect to device %s!", deviceId));
+            ToastShower.show(this, String.format(Constants.DEVICE_CONNECTION_ERROR_MESSAGE, deviceId));
             finish();
         }
     }
@@ -86,7 +86,7 @@ public class ConnectedDeviceActivity extends AppCompatActivity {
             @Override
             public void deviceDisconnected(@NonNull final PolarDeviceInfo polarDeviceInfo) {
                 super.deviceDisconnected(polarDeviceInfo);
-                ToastShower.show(context, String.format("Lost connection with device %s!", deviceId));
+                ToastShower.show(context, String.format(Constants.DEVICE_CONNECTION_LOST_MESSAGE, deviceId));
                 finish();
             }
 
@@ -94,7 +94,7 @@ public class ConnectedDeviceActivity extends AppCompatActivity {
             public void blePowerStateChanged(boolean powered) {
                 super.blePowerStateChanged(powered);
                 if (!powered) {
-                    ToastShower.show(context, String.format("Lost connection with device %s!", deviceId));
+                    ToastShower.show(context, String.format(Constants.DEVICE_CONNECTION_LOST_MESSAGE, deviceId));
                     finish();
                 }
             }

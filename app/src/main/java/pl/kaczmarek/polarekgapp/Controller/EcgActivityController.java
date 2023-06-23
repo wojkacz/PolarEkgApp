@@ -100,11 +100,11 @@ public class EcgActivityController {
                                 }
                             },
                             (Consumer<Throwable>) error -> {
-                                ToastShower.show(activity,"Error");
+                                ToastShower.show(activity, Constants.UNDEFINED_STREAMING_ERROR_MESSAGE);
                                 pauseStreaming();
                             },
                             (Action) () -> {
-                                ToastShower.show(activity, "Ecg stream complete");
+                                ToastShower.show(activity, Constants.ECG_COMPLETE_MESSAGE);
                                 pauseStreaming();
                             }
                     );

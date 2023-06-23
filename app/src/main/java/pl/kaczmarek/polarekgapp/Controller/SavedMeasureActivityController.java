@@ -32,7 +32,7 @@ public class SavedMeasureActivityController {
         } else if(fileName.endsWith(Constants.PPG_EXTENSION)) {
             ChartSetter.setPpgChart(lineChart);
         } else {
-            ToastShower.show(activity, "Incorrect file extension!");
+            ToastShower.show(activity, Constants.LOADING_INCORRECT_EXTENSION_MESSAGE);
             activity.finish();
         }
     }

@@ -3,23 +3,12 @@ package pl.kaczmarek.polarekgapp.Activity;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-
-import java.util.List;
-
 import pl.kaczmarek.polarekgapp.Controller.SavedMeasureActivityController;
 import pl.kaczmarek.polarekgapp.R;
-import pl.kaczmarek.polarekgapp.Utility.ChartSetter;
 import pl.kaczmarek.polarekgapp.Utility.Constants;
-import pl.kaczmarek.polarekgapp.Utility.DataFormatter;
-import pl.kaczmarek.polarekgapp.Utility.ToastShower;
 
 public class SavedMeasureActivity extends AppCompatActivity {
 

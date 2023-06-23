@@ -28,7 +28,7 @@ public class SavedFilesActivityController {
         File[] savedFiles = activity.getApplicationContext().getFilesDir().listFiles(filter);
 
         if (savedFiles == null || savedFiles.length == 0) {
-            ToastShower.show(activity, "No saved files found!");
+            ToastShower.show(activity, Constants.SAVING_NO_FILES_MESSAGE);
             activity.finish();
         } else {
             activity.displayFilesInLayout(savedFiles);
@@ -37,14 +37,14 @@ public class SavedFilesActivityController {
 
     public void deleteFileAndRemoveView(String name, View viewToDelete) {
         if (activity.getApplicationContext().deleteFile(name)) {
-            ToastShower.show(activity, "Deleted file " + name);
+            ToastShower.show(activity, String.format(Constants.DELETING_SUCCESS_MESSAGE, name));
             activity.getSavesList().removeView(viewToDelete);
         } else {
-            ToastShower.show(activity, "Unable to delete file " + name);
+            ToastShower.show(activity, String.format(Constants.DELETING_FAILED_MESSAGE, name));
         }
     }
 
-    public String loadFileData(String name) {
+    private String loadFileData(String name) {
         StringBuilder stringBuilder = new StringBuilder();
         String line;
         BufferedReader in;
@@ -56,7 +56,7 @@ public class SavedFilesActivityController {
             }
             return stringBuilder.toString();
         } catch (Exception e) {
-            ToastShower.show(activity, "Unable to load file " + name);
+            ToastShower.show(activity, String.format(Constants.LOADING_FAILED_MESSAGE, name));
             return null;
         }
     }
@@ -66,16 +66,19 @@ public class SavedFilesActivityController {
         if (data == null) {
             return;
         }
-        if (file.getName().endsWith(Constants.ECG_EXTENSION)) {
-            Intent savedEcgScreen = new Intent(activity, SavedMeasureActivity.class);
-            savedEcgScreen.putExtra(Constants.LOADED_DATA, data);
-            savedEcgScreen.putExtra(Constants.FILE_NAME, file.getName());
-            activity.startActivity(savedEcgScreen);
-        } else if (file.getName().endsWith(Constants.PPG_EXTENSION)) {
-            // Obsługa ładowania plików PPG
+        if (isExtensionMatching(file.getName())) {
+            Intent savedMeasureScreen = new Intent(activity, SavedMeasureActivity.class);
+            savedMeasureScreen.putExtra(Constants.LOADED_DATA, data);
+            savedMeasureScreen.putExtra(Constants.FILE_NAME, file.getName());
+            activity.startActivity(savedMeasureScreen);
         } else {
-            ToastShower.show(activity, "Unable to load file - unknown extension!");
+            ToastShower.show(activity, String.format(Constants.LOADING_FAILED_MESSAGE, file.getName()));
         }
+    }
+
+    private boolean isExtensionMatching(String name) {
+        return name.endsWith(Constants.PPG_EXTENSION)
+            || name.endsWith(Constants.ECG_EXTENSION);
     }
 
 }
