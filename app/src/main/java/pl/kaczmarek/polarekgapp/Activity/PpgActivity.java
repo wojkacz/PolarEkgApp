@@ -125,7 +125,7 @@ public class PpgActivity extends AppCompatActivity {
 
     public void setWaitingTextVisibility() {
         if(waitingText.getVisibility() == View.GONE) {
-            waitingText.setText(View.VISIBLE);
+            waitingText.setVisibility(View.VISIBLE);
             return;
         }
         waitingText.setVisibility(View.GONE);

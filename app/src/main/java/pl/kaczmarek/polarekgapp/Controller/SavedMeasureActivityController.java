@@ -18,6 +18,7 @@ public class SavedMeasureActivityController {
     LineChart lineChart;
     String data;
     String fileName;
+    int entriesAmount;
 
     public SavedMeasureActivityController(SavedMeasureActivity activity, LineChart lineChart, String data, String fileName) {
         this.activity = activity;
@@ -29,8 +30,10 @@ public class SavedMeasureActivityController {
     public void setLineChartByType() {
         if(fileName.endsWith(Constants.ECG_EXTENSION)) {
             ChartSetter.setEcgChart(lineChart);
+            entriesAmount = Constants.MAX_VISIBLE_ENTRIES_ECG;
         } else if(fileName.endsWith(Constants.PPG_EXTENSION)) {
             ChartSetter.setPpgChart(lineChart);
+            entriesAmount = Constants.MAX_VISIBLE_ENTRIES_PPG;
         } else {
             ToastShower.show(activity, Constants.LOADING_INCORRECT_EXTENSION_MESSAGE);
             activity.finish();
@@ -46,13 +49,13 @@ public class SavedMeasureActivityController {
             dataSet.addEntry(entry);
         }
 
-        lineChart.moveViewToX(dataSet.getEntryCount() - Constants.MAX_VISIBLE_ENTRIES);
+        lineChart.moveViewToX(dataSet.getEntryCount() - entriesAmount);
         lineData.notifyDataChanged();
         lineChart.notifyDataSetChanged();
         lineChart.invalidate();
 
         lineChart.fitScreen();
-        lineChart.setVisibleXRangeMaximum(Constants.MAX_VISIBLE_ENTRIES);
+        lineChart.setVisibleXRangeMaximum(entriesAmount);
     }
 
     public void onReturnButtonClick() {

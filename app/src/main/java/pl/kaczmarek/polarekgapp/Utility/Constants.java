@@ -15,7 +15,8 @@ public class Constants {
     public static final String FILE_NAME = "fileName";
     public static final String ECG_EXTENSION = "ecg";
     public static final String PPG_EXTENSION = "ppg";
-    public static final int MAX_VISIBLE_ENTRIES = 200;
+    public static final int MAX_VISIBLE_ENTRIES_ECG = 200;
+    public static final int MAX_VISIBLE_ENTRIES_PPG = 30;
     public static final String NO_BLUETOOTH_ERROR_MESSAGE = "For proper use of application, please allow Bluetooth access.";
     public static final String UNDEFINED_STREAMING_ERROR_MESSAGE = "Undefined streaming error. Please try again.";
     public static final String PPG_COMPLETE_MESSAGE = "PPG Stream Complete";

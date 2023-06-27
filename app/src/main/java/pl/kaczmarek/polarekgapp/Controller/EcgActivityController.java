@@ -40,6 +40,7 @@ public class EcgActivityController {
 
     public void onClearButtonClick() {
         disposeEcg();
+        activity.setWaitingTextVisibility();
         lineChart.getData().getDataSetByIndex(0).clear();
         readyToMeasure = false;
         activity.disableSaveAndClearButtons();
@@ -92,9 +93,9 @@ public class EcgActivityController {
                                             lineChart.notifyDataSetChanged();
                                             lineChart.invalidate();
 
-                                            lineChart.moveViewToX(dataSet.getEntryCount() - Constants.MAX_VISIBLE_ENTRIES);
+                                            lineChart.moveViewToX(dataSet.getEntryCount() - Constants.MAX_VISIBLE_ENTRIES_ECG);
                                             lineChart.fitScreen();
-                                            lineChart.setVisibleXRangeMaximum(Constants.MAX_VISIBLE_ENTRIES);
+                                            lineChart.setVisibleXRangeMaximum(Constants.MAX_VISIBLE_ENTRIES_ECG);
                                         }
                                     }
                                 }

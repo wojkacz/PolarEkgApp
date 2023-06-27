@@ -1,6 +1,7 @@
 package pl.kaczmarek.polarekgapp.Controller;
 
 import android.content.Intent;
+import android.util.Log;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
@@ -43,6 +44,7 @@ public class PpgActivityController {
 
     public void onClearButtonClick() {
         disposePpg();
+        activity.setWaitingTextVisibility();
         lineChart.getData().getDataSetByIndex(0).clear();
         readyToMeasure = false;
         activity.disableSaveAndClearButtons();
@@ -81,7 +83,7 @@ public class PpgActivityController {
                                     PolarOhrData ppgData = (PolarOhrData) polarPpgData;
                                     LineData lineData = lineChart.getData();
                                     ILineDataSet dataSet = lineData.getDataSetByIndex(0);
-                                    for (Integer data : ppgData.getSamples().get(3).getChannelSamples()) {
+                                    for (Integer data : ppgData.getSamples().get(0).getChannelSamples()) {
                                         if(!readyToMeasure) {
                                             readyToMeasure = true;
                                             activity.setWaitingTextVisibility();
@@ -94,9 +96,9 @@ public class PpgActivityController {
                                             lineChart.notifyDataSetChanged();
                                             lineChart.invalidate();
 
-                                            lineChart.moveViewToX(dataSet.getEntryCount() - Constants.MAX_VISIBLE_ENTRIES);
+                                            lineChart.moveViewToX(dataSet.getEntryCount() - Constants.MAX_VISIBLE_ENTRIES_PPG);
                                             lineChart.fitScreen();
-                                            lineChart.setVisibleXRangeMaximum(Constants.MAX_VISIBLE_ENTRIES);
+                                            lineChart.setVisibleXRangeMaximum(Constants.MAX_VISIBLE_ENTRIES_PPG);
                                         }
                                     }
                                 }
